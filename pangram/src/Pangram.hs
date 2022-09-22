@@ -1,15 +1,6 @@
 module Pangram (isPangram) where
 
-import Data.Char
-
-alphabet :: String
-alphabet = ['a' .. 'z']
-
-areCharsInText :: String -> String -> Bool
-areCharsInText [] _ = True
-areCharsInText (x:xs) a
-   | x `notElem` a = False
-   | otherwise = areCharsInText xs a
+import Data.Char ( toLower )
 
 isPangram :: String -> Bool
-isPangram text = areCharsInText alphabet (map toLower text)
+isPangram text = all (`elem` map toLower text) ['a' .. 'z']
