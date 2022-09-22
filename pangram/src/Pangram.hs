@@ -1,16 +1,15 @@
 module Pangram (isPangram) where
 
-alphabetLower :: String
-alphabetLower = "abcdefghiklmnopqrstvxyz"
+import Data.Char
 
-alphabetUpper :: String
-alphabetUpper = "ABCDEFGHIKLMNOPQRSTVXYZ"
+alphabet :: String
+alphabet = ['a' .. 'z']
 
-areCharsInText :: String -> String -> String -> Bool
-areCharsInText [] [] _ = True
-areCharsInText (l:ls) (u:us) a
-   | l `notElem` a && u `notElem` a = False
-   | otherwise = areCharsInText ls us a
+areCharsInText :: String -> String -> Bool
+areCharsInText [] _ = True
+areCharsInText (x:xs) a
+   | x `notElem` a = False
+   | otherwise = areCharsInText xs a
 
 isPangram :: String -> Bool
-isPangram = areCharsInText alphabetLower alphabetUpper
+isPangram text = areCharsInText alphabet (map toLower text)
