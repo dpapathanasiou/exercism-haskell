@@ -13,10 +13,9 @@ toNucleotide c
 
 foo :: String -> Map Nucleotide Int -> Either String (Map Nucleotide Int)
 foo [] m = Right m
-foo (x:xs) m
-  | x `notElem` ['A','C','G','T'] = Left "Error"
-  | notMember nucleotide m = Left "Error"
-  | otherwise = foo xs (insertWith (+) nucleotide 1 m)
+foo (x:xs) m =
+  if x `notElem` ['A','C','G','T'] || notMember nucleotide m then Left "Error"
+  else foo xs (insertWith (+) nucleotide 1 m)
   where
       nucleotide = toNucleotide x
 
