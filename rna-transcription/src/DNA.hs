@@ -1,18 +1,17 @@
 module DNA (toRNA) where
 
-dnaToRna :: Char -> Maybe Char
-dnaToRna dna 
-  | dna == 'G' = Just 'C'
-  | dna == 'C' = Just 'G'
-  | dna == 'T' = Just 'A'
-  | dna == 'A' = Just 'U'
-  | otherwise = Nothing
+dnaToRna :: Char -> Either Char Char
+dnaToRna 'G' = Right 'C'
+dnaToRna 'C' = Right 'G'
+dnaToRna 'T' = Right 'A'
+dnaToRna 'A' = Right 'U'
+dnaToRna  x  = Left x
 
 foo :: String -> String -> Either Char String
 foo [] a = Right a
 foo (x:xs) a = case dnaToRna x of
-    Just rna -> foo xs (a ++ [rna])
-    Nothing  -> Left x
+    Right rna -> foo xs (a ++ [rna])
+    Left  err -> Left err
 
 toRNA :: String -> Either Char String
 toRNA text = foo text ""
