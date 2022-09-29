@@ -1,14 +1,13 @@
 module Acronym (abbreviate) where
 
-import Data.Char ( isSpace, isUpper, toUpper, isPunctuation, isLower )
+import Data.Char ( isAlpha, isLower, isUpper, toUpper ) 
 
-foo :: String -> Char -> String -> String
-foo [] _ acc = acc
-foo (x:xs) prior acc
-  | isUpper x && (isSpace prior || isLower prior) = foo xs x (acc ++ [x])
-  | not (isSpace x) && not (isPunctuation x) && (isSpace prior || isPunctuation prior) = foo xs x (acc ++ [toUpper x])
-  | otherwise = foo xs x acc
+foo :: (Char, String) -> Char -> (Char, String)
+foo (prior, acc) x
+  | prior == '\'' && x == 's'        = (x, acc)
+  | not (isAlpha prior) && isAlpha x = (x, acc ++ [toUpper x])
+  | isLower prior && isUpper x       = (x, acc ++ [x])
+  | otherwise = (x, acc)
 
 abbreviate :: String -> String
-abbreviate xs = foo text ' ' ""
-  where text = filter (/= '\'') xs
+abbreviate = snd . foldl foo (' ', "")
