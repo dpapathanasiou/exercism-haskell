@@ -16,13 +16,11 @@ matchAllOnce (x:xs) candidate
 isAnagram :: String -> String -> Bool
 isAnagram x y
   | length word /= length candidate = False
-  | length wordSet /= length candidateSet = False
+  | length (foldr distinct [] [word]) /= length (foldr distinct [] [candidate]) = False
   | word == candidate = False
   | otherwise = matchAllOnce word candidate
   where word = map toLower x
         candidate = map toLower y
-        wordSet = distinct word []
-        candidateSet = distinct candidate []
 
 foo :: String -> [String] -> [String] -> [String]
 foo _ [] results = results
