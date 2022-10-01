@@ -22,11 +22,5 @@ isAnagram x y
   where word = map toLower x
         candidate = map toLower y
 
-foo :: String -> [String] -> [String] -> [String]
-foo _ [] results = results
-foo word (candidate:candidates) results
-  | isAnagram word candidate = foo word candidates (results ++ [candidate])
-  | otherwise                = foo word candidates results
-
 anagramsFor :: String -> [String] -> [String]
-anagramsFor word candidates = foo word candidates []
+anagramsFor word = filter (isAnagram word)
