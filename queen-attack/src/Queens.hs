@@ -1,11 +1,7 @@
 module Queens (boardString, canAttack) where
 
-boardMin :: Int
-boardMax :: Int
-(boardMin, boardMax) = (0, 7)
-
 board :: [Int]
-board = [boardMin .. boardMax]
+board = [0 .. 7]
 
 boardString :: Maybe (Int, Int) -> Maybe (Int, Int) -> String
 boardString white black = unlines [ unwords [ generateSquare i j | j <- board] | i <- board]
