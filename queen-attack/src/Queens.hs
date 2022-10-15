@@ -15,12 +15,8 @@ boardString white black = unlines [ unwords [ generateSquare i j | j <- board] |
       | Just (x, y) == black = "B"
       | otherwise            = "_"
 
-computeDiagonals :: (Int, Int) -> [(Int, Int)]
-computeDiagonals (x, y) = filter (\(i, j) -> i >= boardMin && i <= boardMax && j >= boardMin && j <= boardMax)
-  (concat [[(x+z, y+z), (x-z, y-z), (x+z, y-z), (x-z, y+z)] | z <- [1 .. boardMax]])
-
 canAttack :: (Int, Int) -> (Int, Int) -> Bool
 canAttack (ax, ay) (bx, by)
   | ax == bx || ay == by = True
-  | (ax, ay) `elem` computeDiagonals (bx, by) = True
+  | abs (ax - bx) == abs (ay - by) = True
   | otherwise = False
