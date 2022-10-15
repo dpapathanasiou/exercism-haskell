@@ -4,25 +4,16 @@ boardMin :: Int
 boardMax :: Int
 (boardMin, boardMax) = (0, 7)
 
-generateSquare :: (Int, Int) -> (Int, Int) -> (Int, Int) -> [Char]
-generateSquare (r, c) (wx, wy) (bx, by)
-  | r == wx && c == wy = 'W' : trailer
-  | r == bx && c == by = 'B' : trailer
-  | otherwise = '_' : trailer
-  where trailer = if c == boardMax then ['\n'] else [' ']
+board :: [Int]
+board = [boardMin .. boardMax]
 
 boardString :: Maybe (Int, Int) -> Maybe (Int, Int) -> String
-boardString white black = concat [(\(x, y) -> 
-  generateSquare (x, y) (wx, wy) (bx, by))
-  (i, j) | i <- [boardMin .. boardMax], j <- [boardMin .. boardMax]]
+boardString white black = unlines [ unwords [ generateSquare i j | j <- board] | i <- board]
   where
-    out = (boardMin - 1, boardMin - 1)
-    (wx, wy) = case white of
-        Nothing -> out
-        Just xy -> xy
-    (bx, by) = case black of
-        Nothing -> out
-        Just xy -> xy
+    generateSquare x y
+      | Just (x, y) == white = "W"
+      | Just (x, y) == black = "B"
+      | otherwise            = "_"
 
 computeDiagonals :: (Int, Int) -> [(Int, Int)]
 computeDiagonals (x, y) = filter (\(i, j) -> i >= boardMin && i <= boardMax && j >= boardMin && j <= boardMax)
