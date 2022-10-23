@@ -8,12 +8,7 @@ module WordProblem (answer) where
 
 import Text.ParserCombinators.Parsec
 
-data MathExpr = Number Integer
-  | Add MathExpr MathExpr
-  | Subtract MathExpr MathExpr
-  | Multiply MathExpr MathExpr
-  | Divide MathExpr MathExpr
-  | Unsupported String
+data MathExpr = Number Integer | Unsupported String
   deriving (Eq, Show)
 
 parseNumber :: Parser MathExpr
@@ -23,31 +18,22 @@ parseNumber = do
 
 parseOperator :: Parser MathExpr
 parseOperator = do
-    x  <- parseNumber
-    op <- many1 (letter <|> space)
-    y  <- parseNumber
-    return $ case op of
-     " plus "          -> Add x y
-     " minus "         -> Subtract x y
-     " multiplied by " -> Multiply x y
-     " divided by "    -> Divide x y
-     _ -> Unsupported op
+    (Number x) <- parseNumber
+    operator   <- many1 (letter <|> space)
+    (Number y) <- parseNumber
+    return $ case operator of
+     " plus "          -> Number (x + y)
+     " minus "         -> Number (x - y)
+     " multiplied by " -> Number (x * y)
+     " divided by "    -> Number (x `div` y)
+     _ -> Unsupported operator
 
 parseMathExpr :: Parser MathExpr
 parseMathExpr = try parseOperator <|> parseNumber
 
-combineMathNum :: (Integer -> Integer -> Integer) -> Maybe Integer -> Maybe Integer -> Maybe Integer
-combineMathNum _ Nothing _ = Nothing
-combineMathNum _ _ Nothing = Nothing
-combineMathNum f (Just x) (Just y) = Just (f x y)
-
 computeMathExpr :: MathExpr -> Maybe Integer
 computeMathExpr (Unsupported _) = Nothing
 computeMathExpr (Number n) = Just n
-computeMathExpr (Add x y) = combineMathNum (+) (computeMathExpr x) (computeMathExpr y)
-computeMathExpr (Subtract x y) = combineMathNum (-) (computeMathExpr x) (computeMathExpr y)
-computeMathExpr (Multiply x y) = combineMathNum (*) (computeMathExpr x) (computeMathExpr y)
-computeMathExpr (Divide x y) = combineMathNum div (computeMathExpr x) (computeMathExpr y)
 
 parseMathStmt :: Parser MathExpr
 parseMathStmt = do
