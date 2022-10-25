@@ -11,6 +11,14 @@ import Text.ParserCombinators.Parsec
 data MathExpr = Number Integer | Unsupported String
   deriving (Eq, Show)
 
+generateMathExpr :: String -> Integer -> Integer -> MathExpr
+generateMathExpr operator x y = case operator of
+    " plus "          -> Number (x + y)
+    " minus "         -> Number (x - y)
+    " multiplied by " -> Number (x * y)
+    " divided by "    -> Number (x `div` y)
+    _ -> Unsupported operator
+
 parseNumber :: Parser MathExpr
 parseNumber = do
     n <- many1 (digit <|> char '-')
@@ -21,15 +29,17 @@ parseOperator = do
     (Number x) <- parseNumber
     operator   <- many1 (letter <|> space)
     (Number y) <- parseNumber
-    return $ case operator of
-     " plus "          -> Number (x + y)
-     " minus "         -> Number (x - y)
-     " multiplied by " -> Number (x * y)
-     " divided by "    -> Number (x `div` y)
-     _ -> Unsupported operator
+    return $ generateMathExpr operator x y
+
+parseNextOperator :: Parser MathExpr
+parseNextOperator = do
+    (Number x) <- parseOperator
+    operator   <- many1 (letter <|> space)
+    (Number y) <- parseNumber
+    return $ generateMathExpr operator x y
 
 parseMathExpr :: Parser MathExpr
-parseMathExpr = try parseOperator <|> parseNumber
+parseMathExpr = try parseNextOperator <|> try parseOperator <|> try parseNumber
 
 computeMathExpr :: MathExpr -> Maybe Integer
 computeMathExpr (Unsupported _) = Nothing
@@ -41,12 +51,6 @@ parseMathStmt = do
     e <- parseMathExpr
     _ <- char '?'
     return e
-
--- for debugging
-readExpr :: String -> String
-readExpr problem = case parse parseMathStmt "math" problem of
-    Left e  -> show e
-    Right x -> show x
 
 answer :: String -> Maybe Integer
 answer problem = case parse parseMathStmt "math" problem of
