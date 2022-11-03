@@ -8,6 +8,8 @@ library:
   exposed-modules: Change
   source-dirs: src
   ghc-options: -Wall
+  dependencies:
+  - array
   # dependencies:
   # - foo       # List here the packages you
   # - bar       # want to use in your solution.
